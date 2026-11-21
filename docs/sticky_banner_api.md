@@ -14,6 +14,23 @@ The following types and operations are shared across ad formats. Signatures desc
   - No SDK initialization-failure callback is exposed by the documented API.
   - Plugin validation errors must be reported separately.
 
+### Privacy Options
+
+- `PrivacyOptions`
+  - `ConsentStatus userConsent` — consent status supplied by the application.
+    - `UNKNOWN` — consent has not been determined.
+    - `GRANTED` — consent has been granted.
+    - `DENIED` — consent has been denied or withdrawn.
+  - `boolean ageRestricted` — enables SDK restrictions for child users.
+  - `boolean locationTracking` — enables SDK location tracking, subject to user consent and required Android permissions.
+- `ConsentStatus` is a plugin type.
+  - `GRANTED` maps to `YandexAds.setUserConsent(true)`.
+  - `DENIED` maps to `YandexAds.setUserConsent(false)`.
+  - `UNKNOWN` must not be treated as granted; it maps to `false` while remaining distinguishable within the plugin.
+- Privacy settings are applied before SDK initialization.
+- The application determines the settings, obtains any required consent, and stores the user's choices.
+- The plugin does not display consent dialogs or request Android permissions automatically.
+
 ### Ad Requests
 
 - `AdRequest`
@@ -27,6 +44,9 @@ The following types and operations are shared across ad formats. Signatures desc
   - `Location location` — optional; requires appropriate consent and SDK configuration.
 - Omitted targeting fields must remain unset.
 - The plugin validates values and converts them to SDK types.
+- Providing `AdTargeting.location` requires `PrivacyOptions.locationTracking == true`.
+  - Otherwise, the plugin rejects the request with a plugin-side validation error.
+  - Enabling location tracking does not require providing an explicit location in each request.
 
 ### Common Behavior
 
@@ -106,5 +126,4 @@ The following types and operations are shared across ad formats. Signatures desc
 
 - The application reserves space using the reported dimensions.
 - Visibility changes must be coordinated with the application's layout.
-- For the initial implementation, changes to window configuration or requested width require destroying and rec
-reating the banner.
+- For the initial implementation, changes to window configuration or requested width require destroying and recreating the banner.
