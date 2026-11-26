@@ -22,8 +22,8 @@ This specification defines RxJava 3 access to the plugin events previously defin
 - Reactive operation signatures:
   - `void initialize(PrivacyOptions options)`
   - `BannerHandle createBanner(BannerOptions options)`
-  - `InterstitialHandle createInterstitial()`
-  - `RewardedHandle createRewarded()`
+  - `FullscreenHandle createInterstitial()`
+  - `FullscreenHandle createRewarded()`
   - Other operation signatures and preconditions remain as defined in the format specifications.
 
 ## Event Model
@@ -79,7 +79,7 @@ This specification defines RxJava 3 access to the plugin events previously defin
 
 ## Event Access
 
-The plugin and every `BannerHandle`, `InterstitialHandle`, and `RewardedHandle` expose:
+The plugin and every `BannerHandle` and `FullscreenHandle` expose:
 
 - `Flowable<AdEvent> events()`
   - Delivers events using the plugin's resolved default scheduler.
@@ -153,7 +153,7 @@ options.eventScheduler = gameScheduler;
 AdsPlugin plugin = new AdsPlugin(options);
 
 // After SDK initialization, create a rewarded handle.
-RewardedHandle rewarded = plugin.createRewarded();
+FullscreenHandle rewarded = plugin.createRewarded();
 
 Flowable<AdEvent> adEvents = rewarded.events();
 
