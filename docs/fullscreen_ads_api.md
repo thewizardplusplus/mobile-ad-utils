@@ -2,8 +2,8 @@
 
 ### Creation
 
-- `InterstitialHandle createInterstitial(InterstitialListener listener)`
-- `RewardedHandle createRewarded(RewardedListener listener)`
+- `FullscreenHandle createInterstitial(FullscreenListener listener)`
+- `FullscreenHandle createRewarded(RewardedListener listener)`
   - Return a handle immediately.
   - Require completed SDK initialization.
   - Do not load or show an advertisement.
@@ -12,7 +12,7 @@
 
 ### Operations
 
-Both handle types expose:
+A `FullscreenHandle` for either format exposes the following operations.
 
 - `void load(AdRequest request)`
   - Starts asynchronous loading.
@@ -34,26 +34,26 @@ Both handle types expose:
   - Is not allowed while a show attempt is active; wait for `onDismissed()` or `onShowFailed()`.
   - Does not provide a way to forcibly close displayed advertising.
 
-### Interstitial Events
+### Shared Fullscreen Events
 
-- `InterstitialListener`
-  - `void onLoaded(InterstitialHandle ad)`
+- `FullscreenListener`
+  - `void onLoaded(FullscreenHandle ad)`
     - The advertisement is ready for a show attempt.
-  - `void onLoadFailed(InterstitialHandle ad, AdError error)`
+  - `void onLoadFailed(FullscreenHandle ad, AdError error)`
     - Loading failed; no advertisement is ready.
-  - `void onShown(InterstitialHandle ad)`
+  - `void onShown(FullscreenHandle ad)`
     - The advertising screen was displayed.
     - Does not indicate completion of a video.
-  - `void onShowFailed(InterstitialHandle ad, AdError error)`
+  - `void onShowFailed(FullscreenHandle ad, AdError error)`
     - The show attempt failed.
     - The plugin releases the loaded advertisement.
-  - `void onDismissed(InterstitialHandle ad)`
+  - `void onDismissed(FullscreenHandle ad)`
     - The advertising screen closed.
     - Does not distinguish early closure from closure after full viewing.
     - The plugin releases the loaded advertisement.
-  - `void onClicked(InterstitialHandle ad)`
+  - `void onClicked(FullscreenHandle ad)`
     - The SDK registered an ad click.
-  - `void onImpression(InterstitialHandle ad, ImpressionData data)`
+  - `void onImpression(FullscreenHandle ad, ImpressionData data)`
     - The SDK registered an impression.
     - `data` may be absent; otherwise, exposes the original ILRD JSON.
     - Does not indicate completion of viewing.
@@ -70,32 +70,12 @@ Both handle types expose:
 
 ### Rewarded Events
 
-- `RewardedListener`
-  - `void onLoaded(RewardedHandle ad)`
-    - The advertisement is ready for a show attempt.
-  - `void onLoadFailed(RewardedHandle ad, AdError error)`
-    - Loading failed; no advertisement is ready.
-  - `void onShown(RewardedHandle ad)`
-    - The advertising screen was displayed.
-    - Does not indicate reward eligibility.
-  - `void onShowFailed(RewardedHandle ad, AdError error)`
-    - The show attempt failed.
-    - The plugin releases the loaded advertisement.
-  - `void onDismissed(RewardedHandle ad)`
-    - The advertising screen closed.
-    - Does not indicate whether a reward was earned.
-    - The plugin releases the loaded advertisement.
-  - `void onClicked(RewardedHandle ad)`
-    - The SDK registered an ad click.
-  - `void onImpression(RewardedHandle ad, ImpressionData data)`
-    - The SDK registered an impression.
-    - `data` may be absent; otherwise, exposes the original ILRD JSON.
-    - Does not indicate reward eligibility.
-  - `void onRewarded(RewardedHandle ad, Reward reward)`
+- `interface RewardedListener extends FullscreenListener`
+  - `void onRewarded(FullscreenHandle ad, Reward reward)`
     - The SDK confirmed reward eligibility.
     - The application grants the reward.
     - The plugin forwards this event at most once per handle.
-    - Reward eligibility must not be inferred from dismissal or impression events.
+    - Only `onRewarded()` confirms reward eligibility.
 
 ### Application Responsibility
 
