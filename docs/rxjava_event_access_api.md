@@ -14,8 +14,8 @@ This specification defines RxJava 3 access to the plugin events previously defin
 ## Configuration
 
 - `PluginOptions`
-  - `Scheduler eventScheduler` — optional default scheduler for event delivery.
-  - If omitted or `null`, use `AndroidSchedulers.mainThread()` from RxAndroid 3.
+  - `Optional<Scheduler> eventScheduler` — optional default scheduler for event delivery.
+  - Defaults to `Optional.empty()`, which selects `AndroidSchedulers.mainThread()` from RxAndroid 3.
 - `AdsPlugin(PluginOptions options)`
   - Creates the plugin and its event source; does not initialize the SDK.
   - Resolves the default event scheduler once for this plugin instance.
@@ -29,9 +29,9 @@ This specification defines RxJava 3 access to the plugin events previously defin
 ## Event Model
 
 - `AdEvent` — immutable base type.
-  - `String eventId` — unique event identifier, preserved during replay.
-  - `String adInstanceId` — originating wrapper handle ID; `null` for SDK-wide events.
-  - `long timestamp` — event creation time in milliseconds since the Unix epoch; not an ordering key.
+  - `UUID eventId` — unique event identifier, preserved during replay.
+  - `Optional<UUID> adInstanceId` — originating wrapper handle ID, empty for SDK-wide events.
+  - `Instant timestamp` — time of event creation. Timestamps do not determine event order.
 - Handle IDs identify wrapper instances, not ad unit IDs.
   - Each handle receives its ID before it can publish events.
   - IDs are never reused, including after handle destruction.
@@ -69,7 +69,7 @@ This specification defines RxJava 3 access to the plugin events previously defin
   - Maps to `onClicked()` for all three formats.
 - `AdImpression`
   - Maps to `onImpression()` for all three formats.
-  - `ImpressionData data` — optional; preserves available original ILRD JSON.
+  - `Optional<ImpressionData> data` — optional; preserves available original ILRD JSON.
   - Represents an SDK-registered impression, not exact display start, viewing completion, or a user profile.
 - `RewardEarned`
   - Maps to rewarded `onRewarded()`.
@@ -148,8 +148,10 @@ The plugin and every `BannerHandle` and `FullscreenHandle` expose:
 ## Usage Example
 
 ```java
+import java.util.Optional;
+
 PluginOptions options = new PluginOptions();
-options.eventScheduler = gameScheduler;
+options.eventScheduler = Optional.of(gameScheduler);
 AdsPlugin plugin = new AdsPlugin(options);
 
 // After SDK initialization, create a rewarded handle.
