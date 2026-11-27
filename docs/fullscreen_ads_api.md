@@ -53,9 +53,9 @@ A `FullscreenHandle` for either format exposes the following operations.
     - The plugin releases the loaded advertisement.
   - `void onClicked(FullscreenHandle ad)`
     - The SDK registered an ad click.
-  - `void onImpression(FullscreenHandle ad, ImpressionData data)`
+  - `void onImpression(FullscreenHandle ad, Optional<ImpressionData> data)`
     - The SDK registered an impression.
-    - `data` may be absent; otherwise, exposes the original ILRD JSON.
+    - When impression data is available, the value exposes the original ILRD JSON. Otherwise, `data` is `Optional.empty()`.
     - Does not indicate completion of viewing.
 
 ### Reward

@@ -2,6 +2,8 @@
 
 The following types and operations are shared across ad formats. Signatures describe the plugin API, not the underlying SDK.
 
+See [Java coding conventions](coding_conventions.md) for identifier types, optional values, and timestamps.
+
 ### SDK Initialization
 
 - `void initialize(PrivacyOptions options, InitializationListener listener)`
@@ -35,16 +37,16 @@ The following types and operations are shared across ad formats. Signatures desc
 
 - `AdRequest`
   - `String adUnitId` — required.
-  - `AdTargeting targeting` — optional.
+  - `Optional<AdTargeting> targeting` — optional.
 - `AdTargeting`
-  - `Integer age` — optional.
-  - `Gender gender` — optional; `MALE` or `FEMALE`.
-  - `String contextQuery` — optional; the user's actual search query.
-  - `List<String> contextTags` — optional; keywords describing the current content.
-  - `Location location` — optional; requires appropriate consent and SDK configuration.
-- Omitted targeting fields must remain unset.
+  - `Optional<Integer> age` — optional.
+  - `Optional<Gender> gender` — optional; `MALE` or `FEMALE`.
+  - `Optional<String> contextQuery` — optional; the user's actual search query.
+  - `Optional<List<String>> contextTags` — optional; keywords describing the current content.
+  - `Optional<Location> location` — optional; requires appropriate consent and SDK configuration.
+- For each empty targeting field, leave the corresponding SDK setting unset.
 - The plugin validates values and converts them to SDK types.
-- Providing `AdTargeting.location` requires `PrivacyOptions.locationTracking == true`.
+- Providing a location in `AdTargeting.location` requires `PrivacyOptions.locationTracking == true`.
   - Otherwise, the plugin rejects the request with a plugin-side validation error.
   - Enabling location tracking does not require providing an explicit location in each request.
 

@@ -60,9 +60,9 @@
     - Does not automatically hide or destroy the banner.
   - `void onClicked(BannerHandle banner)`
     - The SDK registered an ad click.
-  - `void onImpression(BannerHandle banner, ImpressionData data)`
+  - `void onImpression(BannerHandle banner, Optional<ImpressionData> data)`
     - The SDK registered an impression.
-    - `data` may be absent; when available, it exposes the original ILRD JSON.
+    - When impression data is available, the value exposes the original ILRD JSON. Otherwise, `data` is `Optional.empty()`.
 
 ### Layout Responsibility
 
